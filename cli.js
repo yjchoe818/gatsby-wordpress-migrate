@@ -34,8 +34,15 @@ const helperFunctions = require('./functions');
   const inputFilePath = infos ? infos.xml : args[2];
   const outputDir = infos ? infos.dest : args[3];
 
+  // Validate and sanitize inputFilePath
+  const resolvedInputPath = path.resolve(inputFilePath);
+  const baseDir = path.resolve(process.cwd());
+  if (!resolvedInputPath.startsWith(baseDir)) {
+    return log(error('Invalid file path.'));
+  }
+
   // Read the XML file and call DataWrangle after we parse it
-  return fs.readFile(inputFilePath, (err, data) => {
+  return fs.readFile(resolvedInputPath, (err, data) => {
     if (err) {
       return log(error(err));
     }
